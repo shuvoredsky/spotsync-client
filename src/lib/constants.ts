@@ -1,4 +1,7 @@
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
 export const HUBS = [
+
   { id: "sfo-t1-t2", name: "SFO International Terminal 1 & 2" },
   { id: "central-mall", name: "Central Mall Metro Deck" },
   { id: "north-plaza", name: "North Plaza EV Superhub" },

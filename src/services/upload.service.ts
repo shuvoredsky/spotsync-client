@@ -1,4 +1,4 @@
-import api from "./api";
+import { apiClient } from "./api";
 import { ApiResponse } from "@/types/api.types";
 
 export interface UploadResponse {
@@ -13,7 +13,7 @@ export const uploadService = {
     const formData = new FormData();
     formData.append("image", file);
 
-    const response = await api.post<ApiResponse<UploadResponse>>("/upload/image", formData, {
+    const response = await apiClient.post<ApiResponse<UploadResponse>>("/api/v1/upload/image", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
