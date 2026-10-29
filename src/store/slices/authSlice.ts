@@ -54,11 +54,19 @@ export const authSlice = createSlice({
       }
       state.isInitialized = true;
     },
+    updateUser: (state, action: PayloadAction<Partial<User>>) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+        if (typeof window !== "undefined") {
+          localStorage.setItem("spotsync_user", JSON.stringify(state.user));
+        }
+      }
+    },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
   },
 });
 
-export const { setCredentials, logout, initializeAuth, setLoading } = authSlice.actions;
+export const { setCredentials, logout, initializeAuth, updateUser, setLoading } = authSlice.actions;
 export default authSlice.reducer;

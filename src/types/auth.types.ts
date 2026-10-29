@@ -5,6 +5,7 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  avatar_url?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -14,6 +15,7 @@ export interface UserResponse {
   name: string;
   email: string;
   role: UserRole;
+  avatar_url?: string;
   created_at: string;
   updated_at?: string;
 }
@@ -27,7 +29,11 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
-  role?: UserRole;
+}
+
+export interface UpdateProfileRequest {
+  name?: string;
+  avatar_url?: string;
 }
 
 export interface LoginResponse {
@@ -37,6 +43,7 @@ export interface LoginResponse {
     name: string;
     email: string;
     role: UserRole;
+    avatar_url?: string;
   };
 }
 

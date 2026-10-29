@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useDispatch } from "react-redux";
+import { updateUser } from "@/store/slices/authSlice";
+import { authService } from "@/services/auth.service";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,10 +16,34 @@ import { Camera, Car, CheckCircle2, Loader2, Mail, Shield, User, Zap, AlertCircl
 
 export default function DriverProfilePage() {
   const { user } = useAuth();
+  const dispatch = useDispatch();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(user?.avatar_url || null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  useEffect(() => {
+    if (user?.avatar_url) {
+      setAvatarUrl(user.avatar_url);
+    }
+
+    // Load profile from API to ensure fresh data
+    const fetchProfile = async () => {
+      try {
+        const res = await authService.getProfile();
+        if (res.success && res.data) {
+          if (res.data.avatar_url) {
+            setAvatarUrl(res.data.avatar_url);
+          }
+          dispatch(updateUser(res.data));
+        }
+      } catch (err) {
+        // Silently keep cached data if network issue
+      }
+    };
+
+    fetchProfile();
+  }, [user?.avatar_url, dispatch]);
 
   const handleAvatarClick = () => {
     if (fileInputRef.current) {
@@ -44,11 +71,23 @@ export default function DriverProfilePage() {
       setIsUploading(true);
       const res = await uploadService.uploadImage(file);
       if (res.success && res.data?.url) {
-        setAvatarUrl(res.data.url);
-        setUploadStatus({
-          type: "success",
-          message: "Profile avatar uploaded successfully!",
-        });
+        const uploadedUrl = res.data.url;
+        setAvatarUrl(uploadedUrl);
+
+        // Persist avatar to user profile in backend
+        const updateRes = await authService.updateProfile({ avatar_url: uploadedUrl });
+        if (updateRes.success && updateRes.data) {
+          dispatch(updateUser({ avatar_url: uploadedUrl }));
+          setUploadStatus({
+            type: "success",
+            message: "Profile avatar uploaded and saved successfully!",
+          });
+        } else {
+          setUploadStatus({
+            type: "error",
+            message: updateRes.message || "Failed to update profile avatar",
+          });
+        }
       } else {
         setUploadStatus({
           type: "error",
@@ -89,6 +128,7 @@ export default function DriverProfilePage() {
         <div className="md:col-span-1 rounded-2xl border border-slate-200 bg-white p-6 text-center space-y-4 shadow-sm">
           <div className="relative mx-auto h-24 w-24 group">
             {fullAvatarUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={fullAvatarUrl}
                 alt={user?.name || "Driver Avatar"}
