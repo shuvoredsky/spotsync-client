@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Lock, Mail, Shield, User as UserIcon, Zap } from "lucide-react";
+import { ArrowRight, Lock, Mail, User as UserIcon } from "lucide-react";
 
 export default function RegisterPage() {
   const { register: registerUser, isLoading } = useAuth();
@@ -19,8 +19,6 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -28,11 +26,8 @@ export default function RegisterPage() {
       name: "",
       email: "",
       password: "",
-      role: "driver",
     },
   });
-
-  const selectedRole = watch("role");
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
@@ -56,36 +51,6 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
-            {/* Role Selector Tabs */}
-            <div className="space-y-2">
-              <Label className="text-slate-300">Account Type</Label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setValue("role", "driver")}
-                  className={`flex items-center justify-center gap-2 rounded-xl border p-2.5 text-xs font-semibold transition-all ${
-                    selectedRole === "driver"
-                      ? "border-[#00d084] bg-[#00d084]/15 text-[#00d084] shadow-sm shadow-[#00d084]/20"
-                      : "border-slate-700 bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-white"
-                  }`}
-                >
-                  <Zap className="h-4 w-4" />
-                  <span>EV / Vehicle Driver</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setValue("role", "admin")}
-                  className={`flex items-center justify-center gap-2 rounded-xl border p-2.5 text-xs font-semibold transition-all ${
-                    selectedRole === "admin"
-                      ? "border-[#00d084] bg-[#00d084]/15 text-[#00d084] shadow-sm shadow-[#00d084]/20"
-                      : "border-slate-700 bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-white"
-                  }`}
-                >
-                  <Shield className="h-4 w-4" />
-                  <span>Hub Administrator</span>
-                </button>
-              </div>
-            </div>
 
             <div className="space-y-2">
               <Label htmlFor="name" className="text-slate-300">

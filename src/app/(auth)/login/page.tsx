@@ -124,29 +124,41 @@ function LoginForm() {
           </Button>
 
           {/* Quick Demo Fill Buttons */}
-          <div className="pt-2 border-t border-slate-800">
-            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center mb-2">
-              Quick Test Credentials
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleFillDemo("driver@spotsync.io", "password123")}
-                className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/60 p-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-              >
-                <UserCheck className="h-3.5 w-3.5 text-emerald-400" />
-                <span>Driver Demo</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleFillDemo("admin@spotsync.io", "password123")}
-                className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/60 p-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-              >
-                <ShieldCheck className="h-3.5 w-3.5 text-teal-400" />
-                <span>Admin Demo</span>
-              </button>
-            </div>
-          </div>
+          {(() => {
+            const demoAdminEmail = process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL;
+            const demoAdminPassword = process.env.NEXT_PUBLIC_DEMO_ADMIN_PASSWORD;
+            const demoDriverEmail = process.env.NEXT_PUBLIC_DEMO_DRIVER_EMAIL || "driver@spotsync.io";
+            const demoDriverPassword = process.env.NEXT_PUBLIC_DEMO_DRIVER_PASSWORD || "password123";
+
+            return (
+              <div className="pt-2 border-t border-slate-800">
+                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center mb-2">
+                  Quick Test Credentials
+                </p>
+                <div className={`grid ${demoAdminEmail && demoAdminPassword ? "grid-cols-2" : "grid-cols-1"} gap-2`}>
+                  <button
+                    type="button"
+                    onClick={() => handleFillDemo(demoDriverEmail, demoDriverPassword)}
+                    className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/60 p-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                  >
+                    <UserCheck className="h-3.5 w-3.5 text-emerald-400" />
+                    <span>Driver Demo</span>
+                  </button>
+
+                  {demoAdminEmail && demoAdminPassword && (
+                    <button
+                      type="button"
+                      onClick={() => handleFillDemo(demoAdminEmail, demoAdminPassword)}
+                      className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/60 p-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                    >
+                      <ShieldCheck className="h-3.5 w-3.5 text-teal-400" />
+                      <span>Admin Demo</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
         </CardContent>
 
         <CardFooter className="flex flex-col space-y-3 pt-0">
