@@ -152,6 +152,11 @@ export default function AdminReservationsPage() {
                         <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded-md">
                           {res.license_plate}
                         </span>
+                        {res.vehicle_model && (
+                          <p className="text-[10px] text-slate-400 mt-0.5 truncate max-w-[130px]">
+                            {res.vehicle_model}
+                          </p>
+                        )}
                       </TableCell>
 
                       <TableCell>
@@ -159,7 +164,7 @@ export default function AdminReservationsPage() {
                           {res.zone?.name || "Terminal Hub"}
                         </p>
                         <p className="text-[11px] text-slate-400">
-                          {formatZoneType(res.zone?.type)}
+                          {res.selected_bay ? `Bay ${res.selected_bay} • ` : ""}{formatZoneType(res.zone?.type)}
                         </p>
                       </TableCell>
 

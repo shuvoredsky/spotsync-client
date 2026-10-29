@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDateTime, formatZoneType } from "@/lib/utils";
+import { formatCurrency, formatDateTime, formatZoneType } from "@/lib/utils";
 import { FileText, QrCode, Trash2, Zap } from "lucide-react";
 
 interface MyReservationTableProps {
@@ -135,15 +135,22 @@ export function MyReservationTable({
                           {res.zone?.name || "Terminal Hub"}
                         </p>
                         <p className="text-[11px] text-slate-500">
-                          Bay E-07 • {formatZoneType(res.zone?.type)}
+                          {res.selected_bay ? `Bay ${res.selected_bay}` : "Bay E-07"} • {formatZoneType(res.zone?.type)}
                         </p>
                       </div>
                     </TableCell>
 
                     <TableCell>
-                      <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded-md">
-                        {res.license_plate}
-                      </span>
+                      <div>
+                        <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded-md">
+                          {res.license_plate}
+                        </span>
+                        {res.vehicle_model && (
+                          <p className="text-[10px] text-slate-400 mt-0.5 truncate max-w-[140px]">
+                            {res.vehicle_model}
+                          </p>
+                        )}
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-xs text-slate-600">
@@ -151,7 +158,13 @@ export function MyReservationTable({
                     </TableCell>
 
                     <TableCell className="font-bold text-xs text-slate-900">
-                      {isCancelled ? <span className="line-through text-slate-400">$16.50</span> : "$16.50"}
+                      {isCancelled ? (
+                        <span className="line-through text-slate-400">
+                          {formatCurrency(res.total_amount ?? 16.5)}
+                        </span>
+                      ) : (
+                        formatCurrency(res.total_amount ?? 16.5)
+                      )}
                     </TableCell>
 
                     <TableCell>

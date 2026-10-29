@@ -87,6 +87,9 @@ export function FastCheckoutForm({ zone, selectedBay }: FastCheckoutFormProps) {
       const res = await createReservation({
         zone_id: zone.id,
         license_plate: data.license_plate,
+        vehicle_model: data.vehicle_model || selectedVehicle,
+        selected_bay: selectedBay,
+        duration_hours: durationHours,
       });
 
       if (res.success && res.data) {
